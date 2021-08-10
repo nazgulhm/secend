@@ -12,12 +12,16 @@ import SnapKit
 class ViewController: UIViewController {
     
     private let stackHeight = 80
-    
+    private var sum = 0
+    private var label_text: String = ""
+    public var prev_value: Double = 0.0
+    private var operation = ""
     lazy var inputLAbale: UILabel = {
        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 70, weight: .semibold)
         label.textColor = .white
-        label.text = "0"
+        label.text = label_text
+        label.textAlignment = .right
         return label
     }()
     
@@ -69,7 +73,7 @@ class ViewController: UIViewController {
     }()
     
     private lazy var fifeButton: UIButton = {
-        let button = createButton(text: "5",selector: #selector(fifeNum))
+        let button = createButton(text: "5",selector: #selector(fiveNum))
         return button
     }()
     
@@ -209,8 +213,26 @@ class ViewController: UIViewController {
     
     //MARK: UIActions
     
+    
+    private func addText(number: String){
+        label_text += number
+        inputLAbale.text = label_text
+    }
+    
+    
+    private func setOperation(new_operation: String){
+        operation = new_operation
+        prev_value = Double(label_text) ?? 0.0
+        label_text = ""
+        inputLAbale.text = operation
+    }
+    
     @objc func clearHandler() {
         print("AC")
+        inputLAbale.text = ""
+        sum = 0
+        label_text = ""
+        
     }
     
     @objc func plusMinusHanlder() {
@@ -222,51 +244,84 @@ class ViewController: UIViewController {
     }
     @objc func divideSign() {
         print("/")
+        setOperation(new_operation: "/")
     }
     @objc func sevenNum() {
         print("7")
+        addText(number: "7")
     }
     @objc func eightNum() {
         print("8")
+        addText(number: "8")
     }
     @objc func nineNum() {
         print("9")
+        addText(number: "9")
     }
     @objc func multiply() {
         print("x")
+        setOperation(new_operation: "x")
     }
     @objc func fourNum() {
         print("4")
+        addText(number: "4")
     }
-    @objc func fifeNum() {
+    @objc func fiveNum() {
         print("5")
+        addText(number: "5")
     }
     @objc func sixNum() {
         print("6")
+        addText(number: "6")
     }
     @objc func minus() {
         print("-")
+        setOperation(new_operation: "-")
+
     }
     @objc func oneNum() {
         print("1")
+        addText(number: "1")
     }
     @objc func twoNum() {
         print("2")
+        addText(number: "2")
     }
     @objc func threeNum() {
         print("3")
+        addText(number: "3")
     }
     @objc func plus() {
         print("+")
+        setOperation(new_operation: "+")
     }
     @objc func zeroNum() {
         print("0")
+        addText(number: "0")
     }
     @objc func point() {
         print(".")
     }
     @objc func equal() {
         print("=")
+        if operation == "+" {
+            label_text = String(prev_value + (Double(label_text) ?? 0.0)) ?? "NOT"
+        }
+        else if(operation == "-"){
+            label_text = String(prev_value - (Double(label_text) ?? 0.0)) ?? "NOT"
+        }
+        else if(operation == "/"){
+            let q = (Double(label_text) ?? 0.0)
+            if q == 0 {
+                inputLAbale.text = "division by zero!!!"
+                return
+            }
+            label_text = String(prev_value / q) ?? "NOT"
+        }
+        else if(operation == "x"){
+            label_text = String(prev_value * (Double(label_text) ?? 0.0)) ?? "NOT"
+        }
+        inputLAbale.text = label_text
     }
     
     
@@ -288,6 +343,7 @@ class ViewController: UIViewController {
         button.backgroundColor = .orange
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         button.layer.cornerRadius = CGFloat(stackHeight / 2)
+        button.addTarget(self, action: selector, for: .touchUpInside)
         return button
     }
     
@@ -298,6 +354,7 @@ class ViewController: UIViewController {
         button.backgroundColor = .darkGray
         button.titleLabel?.font = UIFont.systemFont(ofSize: 25, weight: .semibold)
         button.layer.cornerRadius = CGFloat(stackHeight / 2)
+        button.addTarget(self, action: selector, for: .touchUpInside)
         return button
     }
 }
